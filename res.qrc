@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/folder-locked.svg</file>
+        <file>icons/document-decrypt.svg</file>
+    </qresource>
+</RCC>
