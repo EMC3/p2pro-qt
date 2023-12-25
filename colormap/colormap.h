@@ -2,9 +2,9 @@
 #define COLORMAP_H
 
 
-#include <cstdint>
-#include <string>
+#include <QString>
 #include <vector>
+
 class ColorMap
 {
 public:
@@ -12,7 +12,7 @@ public:
         PARULA, HOTIRON, PLASMA, INFERNO, MAGMA, VIRIDIS
     };
 
-    ColorMap(std::string csvFile);
+    ColorMap(QString csvFile);
     ColorMap(InternalMaps map);
     void setBounds(double min, double max);
     uint32_t getARGB(double v, int alpha = 255);

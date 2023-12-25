@@ -2,20 +2,22 @@
 //#include "logger/log.h"
 #include "ui_mainwindow.h"
 
-#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    ringIdx = 0;
     ui->setupUi(this);
+
+    resetMinMaxRing();
 
     upperLock = lowerLock = false;
 
     ui->colormap->blockSignals(true);
     cmaps.emplace_back(ColorMap::HOTIRON); ui->colormap->addItem("Hotiron");
-    cmaps.emplace_back("../jet.csv"); ui->colormap->addItem("Jet");
-    cmaps.emplace_back("../gray.csv"); ui->colormap->addItem("Gray");
+    cmaps.emplace_back(":/misc/jet.csv"); ui->colormap->addItem("Jet");
+    cmaps.emplace_back(":/misc/gray.csv"); ui->colormap->addItem("Gray");
     cmaps.emplace_back(ColorMap::PLASMA); ui->colormap->addItem("Plasma");
     cmaps.emplace_back(ColorMap::INFERNO); ui->colormap->addItem("Inferno");
     cmaps.emplace_back(ColorMap::MAGMA); ui->colormap->addItem("Magma");
@@ -23,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
     cmaps.emplace_back(ColorMap::PARULA); ui->colormap->addItem("Parula");
     ui->colormap->setCurrentIndex(0);
     ui->colormap->blockSignals(false);
-
 
     auto customPlot = ui->plot;
 
@@ -38,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     customPlot->xAxis2->setTickLabels(false);
     customPlot->xAxis2->setTicks(false);
 
+    customPlot->axisRect()->setAutoMargins(QCP::msNone);
+    customPlot->axisRect()->setMargins(QMargins(0,0,0,6));
     // set up the QCPColorMap:
     colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
     /*int nx = 200;
@@ -84,13 +87,18 @@ MainWindow::MainWindow(QWidget *parent)
     maxMarker = new Marker(colorMap, Qt::red, Qt::red);
     minMarker = new Marker(colorMap, Qt::cyan, Qt::cyan);
 
-
     // Import Test Image
     img = std::make_shared<ThermalImage>(256, 192);
-    double tmp[256*192];
-    std::ifstream ifs("/f/TMP/thermal/img00384.bin");
-    ifs.read((char*)tmp, img->width*img->height*sizeof(double));
-    for(int i = 0; i < 256*192; i++)img->data[i] = tmp[i];
+    QFile testFile(":/misc/testdata.bin");
+    testFile.open(QFile::ReadOnly);
+    QByteArray d = testFile.readAll();
+    testFile.close();
+    if(d.size() == 256*192*sizeof(float)){
+        memcpy(img->data, d.constData(), 256*192*sizeof(float));
+    }else{
+        memset(img->data, 0, 256*192*sizeof(float));
+    }
+
     img->computeMetrics();
     plotImg();
 }
@@ -120,14 +128,17 @@ void MainWindow::updateCmap(){
     reRange();
 }
 
-void MainWindow::plotImg()
-{
+void MainWindow::setFlipSettings(){
     bool flipH = ui->flipH->isChecked();
     bool flipV = ui->flipV->isChecked();
 
     ui->plot->xAxis->setRangeReversed(flipH);
     ui->plot->yAxis->setRangeReversed(flipV);
+    ui->plot->replot(QCustomPlot::rpQueuedReplot);
+}
 
+void MainWindow::plotImg()
+{
     colorMap->data()->setSize(img->width, img->height);
     colorMap->data()->setRange(QCPRange(0, img->width), QCPRange(0, img->height));
     ui->plot->rescaleAxes();
@@ -141,6 +152,10 @@ void MainWindow::plotImg()
             for (int xIndex=0; xIndex<img->width; ++xIndex) colorMap->data()->setCell(xIndex, yIndex, img->getValue(xIndex, sy));
         //}
     }
+
+    minRing[ringIdx] = img->min;
+    maxRing[ringIdx] = img->max;
+    ringIdx = (ringIdx+1)%64;
 
     maxMarker->setPosition(img->maxX, img->maxY);
     maxMarker->updateText(img);
@@ -180,6 +195,7 @@ void MainWindow::on_colorInvert_toggled(bool checked)
 
 void MainWindow::on_btnStart_clicked()
 {
+    resetMinMaxRing();
     tc->start();
 }
 
@@ -278,14 +294,28 @@ void MainWindow::reRange()
 {
     if(!img)return;
 
-    double min = lowerLock ? ui->lowerBound->value() : img->min;
-    double max = upperLock ? ui->upperBound->value() : img->max;
+    float autoMin = minRing[0];
+    float autoMax = maxRing[0];
+    for(int i = 1; i < 64; i++){
+        autoMax = std::max(maxRing[i], autoMax);
+        autoMin = std::min(minRing[i], autoMin);
+    }
+
+    double min = lowerLock ? ui->lowerBound->value() : autoMin;
+    double max = upperLock ? ui->upperBound->value() : autoMax;
 
     if(!lowerLock)ui->lowerBound->setValue(min);
     if(!upperLock)ui->upperBound->setValue(max);
 
     colorMap->setDataRange(QCPRange(min, max));
     ui->plot->replot(QCustomPlot::rpQueuedReplot);
+}
+
+void MainWindow::resetMinMaxRing(){
+    for(int i = 0; i < 64; i++){
+        minRing[i] = +999999.0f;
+        maxRing[i] = -999999.0f;
+    }
 }
 
 
@@ -375,5 +405,17 @@ void MainWindow::on_showMin_toggled(bool checked)
 {
     minMarker->setHidden(!checked);
     ui->plot->replot(QCustomPlot::rpQueuedReplot);
+}
+
+
+void MainWindow::on_flipH_toggled(bool checked)
+{
+    setFlipSettings();
+}
+
+
+void MainWindow::on_flipV_toggled(bool checked)
+{
+    setFlipSettings();
 }
 

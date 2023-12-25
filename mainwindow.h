@@ -68,9 +68,16 @@ private slots:
 
     void on_showMin_toggled(bool checked);
 
+    void on_flipH_toggled(bool checked);
+
+    void on_flipV_toggled(bool checked);
+
 private:
     void updateUserMarkers();
     void reRange();
+
+    void resetMinMaxRing();
+
 
     Ui::MainWindow *ui;
     void updateCmap();
@@ -90,5 +97,10 @@ private:
 
     std::list<std::shared_ptr<Marker>> userMarkers;
 
+    void setFlipSettings();
+
+    float minRing[64];
+    float maxRing[64];
+    int ringIdx;
 };
 #endif // MAINWINDOW_H

@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>icons/folder-locked.svg</file>
         <file>icons/document-decrypt.svg</file>
+        <file>misc/gray.csv</file>
+        <file>misc/jet.csv</file>
+        <file>misc/testdata.bin</file>
     </qresource>
 </RCC>

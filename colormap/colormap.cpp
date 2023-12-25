@@ -1,8 +1,10 @@
 #include "colormap.h"
-#include <cmath>
-#include <fstream>
 #include <cmdline.h>
 #include "hardcoded_colormaps.h"
+#include "logger/log.h"
+#include <cmath>
+#include <QFile>
+
 ColorMap::ColorMap(InternalMaps map){
     const unsigned int * ptr;
     switch(map){
@@ -35,12 +37,18 @@ ColorMap::ColorMap(InternalMaps map){
 }
 
 
-ColorMap::ColorMap(std::string csvFile)
+ColorMap::ColorMap(QString csvFile)
 {
-    std::ifstream ifs(csvFile);
-    std::string line;
-    while(std::getline(ifs, line)){
-        CMDLine ln(line, CMDLine::OutOfRangeException, ",");
+    QFile inFile(csvFile);
+    if(!inFile.open(QFile::ReadOnly)){
+        ERR <<"Cannot load colormap: "<<csvFile;
+        return;
+    }
+    while(1){
+        QString line = inFile.readLine();
+        if(line.size() == 0)break;
+
+        CMDLine ln(line.toStdString(), CMDLine::OutOfRangeException, ",");
         uint32_t r = ln[0];
         uint32_t g = ln[1];
         uint32_t b = ln[2];
@@ -53,8 +61,11 @@ ColorMap::ColorMap(std::string csvFile)
         e |= r<<16;
         e |= g<<8;
         e |= b;
+
         values.push_back(e);
     }
+
+    inFile.close();
 }
 
 void ColorMap::setBounds(double min, double max)
