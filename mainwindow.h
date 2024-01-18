@@ -10,24 +10,13 @@ class QCPColorMap;
 class QCPItemTracer;
 class QCPItemText;
 
+struct Marker;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-struct Marker{
-    QCPItemTracer * tracer;
-    QCPItemText * label;
-    QCPColorMap *colorMap;
-    int dataX, dataY;
-    bool hidden;
-    Marker(QCPColorMap *colorMap, QColor markerColor, QColor textColor = Qt::white);
-    ~Marker();
-    void setPosition(int dataX, int dataY);
 
-    void updateText(const std::shared_ptr<ThermalImage> & img);
-
-    void setHidden(bool hide);
-};
 
 class MainWindow : public QMainWindow
 {

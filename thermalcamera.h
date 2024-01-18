@@ -29,9 +29,12 @@ class ThermalCamera : public QObject
     Q_OBJECT
 public:
     explicit ThermalCamera(QObject *parent = nullptr);
-    void start();
+    void start(QString videoDevice);
     void stop();
     std::shared_ptr<ThermalImage> lastImage;
+
+    bool isStarted();
+    bool hasError();
 signals:
     void newThermalImage();
     void statusUpdate(QString statusStr);
