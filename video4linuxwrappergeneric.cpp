@@ -7,9 +7,9 @@
 #include <string.h>
 #include <logger/log.h>
 #include <sys/mman.h>
+#include <stdlib.h>
 
-
-Video4LinuxWrapperGeneric::Video4LinuxWrapperGeneric(const char* device, uint32_t format, const int width, const int height, std::function<void(void*, int)> frame_cb)
+Video4LinuxWrapperGeneric::Video4LinuxWrapperGeneric(QString device, uint32_t format, const int width, const int height, std::function<void(void*, int)> frame_cb)
     : width(width), height(height), format(format), cb(frame_cb), dev(device)
 {
     run = false;
@@ -43,11 +43,19 @@ void Video4LinuxWrapperGeneric::start()
 
 void Video4LinuxWrapperGeneric::worker()
 {
+#ifdef ANDROID
+    // To hack for running on android:
+    // ->su -c setenforce 0
+    // ->su -c chown <current user> /dev/video3
+    system(("su -c chown "+std::to_string(geteuid())+" "+dev.toStdString()).c_str());
+#endif
+
+
     // Open the video device
-    fd = open(dev, O_RDWR | O_NONBLOCK, 0);
+    fd = open(qPrintable(dev), O_RDWR | O_NONBLOCK, 0);
     if (fd == -1) {
         ERR << "Error opening " << dev;
-        errorString = "Error opening "+QString(dev)+" "+strerror(errno);
+        errorString = "Error opening "+dev+" "+strerror(errno);
         hasError = true;
         close(fd);
         return;
@@ -84,6 +92,9 @@ void Video4LinuxWrapperGeneric::worker()
     }
     nBuffers = req.count;
     buffers.resize(nBuffers);
+
+    size_t bufsize;
+
     for(int i = 0; i < nBuffers; i++){
         struct v4l2_buffer buf;
         memset(&buf, 0, sizeof(v4l2_buffer));
@@ -99,7 +110,9 @@ void Video4LinuxWrapperGeneric::worker()
             return;
         }
 
-        buffers[i] = (char*)mmap (NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
+        bufsize = buf.length;
+
+        buffers[i] = (char*)mmap (NULL, bufsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
         if(buffers[i] == MAP_FAILED){
             errorString = QString("Error MMAP: ")+strerror(errno);
             hasError = true;
@@ -172,6 +185,10 @@ void Video4LinuxWrapperGeneric::worker()
             // Handle the error or throw an exception
             break;
         }
+    }
+
+    for(int i = 0; i < buffers.size(); i++){
+        munmap(buffers[i], bufsize);
     }
 
     type = V4L2_BUF_TYPE_VIDEO_CAPTURE;

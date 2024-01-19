@@ -4,23 +4,35 @@
 ThermalCamera::ThermalCamera(QObject *parent)
     : QObject{parent}
 {
-    v4lcam = std::make_shared<Video4LinuxWrapperGeneric>("/dev/video0", V4L2_PIX_FMT_YUYV, 256, 384, std::bind(&ThermalCamera::imgCb, this, std::placeholders::_1, std::placeholders::_2));
     statusTimer = new QTimer(this);
     statusTimer->start(1000);
     connect(statusTimer, &QTimer::timeout, this, &ThermalCamera::updateStatus);
     started = false;
 }
 
-void ThermalCamera::start()
+void ThermalCamera::start(QString videoDevice)
 {
     started = true;
+    v4lcam = std::make_shared<Video4LinuxWrapperGeneric>(videoDevice, V4L2_PIX_FMT_YUYV, 256, 384, std::bind(&ThermalCamera::imgCb, this, std::placeholders::_1, std::placeholders::_2));
     v4lcam->start();
 }
 
 void ThermalCamera::stop()
 {
+    if(!started)return;
     started = false;
     v4lcam->stop();
+}
+
+bool ThermalCamera::isStarted()
+{
+    return started;
+}
+
+bool ThermalCamera::hasError()
+{
+    if(!started)return false;
+    return v4lcam->hasError;
 }
 
 void ThermalCamera::imgCb(void * data, int nbytes)

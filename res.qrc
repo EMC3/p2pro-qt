@@ -5,5 +5,11 @@
         <file>misc/gray.csv</file>
         <file>misc/jet.csv</file>
         <file>misc/testdata.bin</file>
+        <file>darkicons/gear.svg</file>
+        <file>darkicons/locked.svg</file>
+        <file>darkicons/redcircle.svg</file>
+        <file>darkicons/unlocked.svg</file>
+        <file>darkicons/play.svg</file>
+        <file>darkicons/stop.svg</file>
     </qresource>
 </RCC>

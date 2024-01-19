@@ -10,28 +10,42 @@ SOURCES += \
     cmdline.cpp \
     colormap/colormap.cpp \
     colormap/hardcoded_colormaps.cpp \
+    colormapmanager.cpp \
+    displaywindow.cpp \
     logger/log.cpp \
     logger/loggerbackend.cpp \
     main.cpp \
-    mainwindow.cpp \
+    #mainwindow.cpp \
+    marker.cpp \
     qcp/qcustomplot.cpp \
+    settingswidget.cpp \
     thermalcamera.cpp \
+    thermalplot.cpp \
     video4linuxwrappergeneric.cpp
 
 HEADERS += \
     cmdline.h \
     colormap/colormap.h \
     colormap/hardcoded_colormaps.h \
+    colormapmanager.h \
+    displaywindow.h \
     logger/log.h \
     logger/loggerbackend.h \
-    mainwindow.h \
+    #mainwindow.h \
+    marker.h \
     qcp/qcustomplot.h \
+    settingswidget.h \
     thermalcamera.h \
+    thermalplot.h \
     video4linuxwrappergeneric.h
 
 FORMS += \
-    mainwindow.ui
+    displaywindow.ui \
+    #mainwindow.ui \
+    settingswidget.ui
 
+
+LIBS += -ltiff
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -45,4 +59,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 #LIBS += -L/mnt/d/QT/mlibs/build-mlibs-Desktop-Release/
 
 RESOURCES += \
+    darkstyle.qrc \
     res.qrc
