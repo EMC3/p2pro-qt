@@ -24,13 +24,18 @@ public:
     explicit DisplayWindow(QWidget *parent = nullptr);
     ~DisplayWindow();
 
+    void keyPressEvent(QKeyEvent *ev);
+
+signals:
+    void colormapChanged(int cmIdx);
+    void flippedH();
+    void flippedV();
+    void colorInverted();
+
 private slots:
     void on_cmapLock_clicked();
-
     void on_savePhoto_clicked();
-
     void on_settings_clicked();
-
     void on_playPause_clicked();
 
 private:

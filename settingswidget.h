@@ -25,10 +25,17 @@ public:
     bool enableMinMkr;
     bool enableMaxMkr;
     bool enableCenterMkr;
+    void invertColorBtn();
+    void keyPressEvent(QKeyEvent *event);
+
+public slots:
+    void changeColormap(int cmIdx);
+    void flipHKeyBtn();
+    void flipVKeyBtn();
+
 
 private slots:
     void on_closeBtn_clicked();
-
     void on_delMarkers_clicked();
 
 signals:

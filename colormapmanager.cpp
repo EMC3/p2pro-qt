@@ -25,8 +25,22 @@ ColorMap &ColorMapManager::getColorMap(std::string name)
     return cmaps[0].second;
 }
 
+int ColorMapManager::getIndex(std::string name)
+{
+    int idx = 1;
+    for(auto & cm : cmaps){
+        if(cm.first == name){
+            return idx;
+        }
+        idx++;
+    }
+    return 0;
+}
+
 ColorMapManager *ColorMapManager::get()
 {
     if(inst == nullptr)inst = new ColorMapManager();
     return inst;
 }
+
+

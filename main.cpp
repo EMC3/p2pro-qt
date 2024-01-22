@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QTextStream>
 #include <unistd.h>
 
 #include "logger/log.h"

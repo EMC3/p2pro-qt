@@ -7,9 +7,6 @@
 #include <filesystem>
 #include <regex>
 
-
-
-
 DisplayWindow::DisplayWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::DisplayWindow)
@@ -49,6 +46,12 @@ DisplayWindow::DisplayWindow(QWidget *parent)
     connect(sw, &SettingsWidget::back, this, &DisplayWindow::applySettings);
     connect(sw, &SettingsWidget::delMarkers, ui->plot, &ThermalPlot::deleteUserMarkers);
 
+    /* Hotkey Changes to Settings */
+    connect(this, &DisplayWindow::colormapChanged, sw, &SettingsWidget::changeColormap);
+    connect(this, &DisplayWindow::flippedH, sw, &SettingsWidget::flipHKeyBtn);
+    connect(this, &DisplayWindow::flippedV, sw, &SettingsWidget::flipVKeyBtn);
+    connect(this, &DisplayWindow::colorInverted, sw, &SettingsWidget::invertColorBtn);
+
     applySettings();
 }
 
@@ -84,6 +87,37 @@ void DisplayWindow::applySettings(){
 DisplayWindow::~DisplayWindow()
 {
     delete ui;
+}
+
+void DisplayWindow::keyPressEvent(QKeyEvent *ev)
+{
+    //LOG << "You Pressed Key " << ev->text();
+    /* check cm changes */
+    for(int cnt = 1; cnt < 10; cnt++){
+        if (ev->text().compare(QString::number(cnt)) == 0){
+            LOG << "Changing colormap: " << ev->text();
+            emit colormapChanged(cnt);
+            return;
+        }
+    }
+
+    if (ev->text().compare(QString("h")) == 0){
+    LOG << "Flip horizontal";
+    emit flippedH();
+    return;
+    }
+
+    if (ev->text().compare(QString("v")) == 0){
+        LOG << "Flip vertical";
+        emit flippedV();
+        return;
+    }
+
+    if (ev->text().compare(QString("i")) == 0){
+        LOG << "Color inverted";
+        emit colorInverted();
+        return;
+    }
 }
 
 void DisplayWindow::on_cmapLock_clicked()

@@ -13,6 +13,7 @@ public:
     std::vector<std::pair<std::string, ColorMap>> cmaps;
 
     static ColorMapManager * get();
+    int getIndex(std::string name);
 
 private:
     static ColorMapManager * inst;

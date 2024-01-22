@@ -53,7 +53,7 @@
      <item row="3" column="1">
       <widget class="QCheckBox" name="flipH">
        <property name="text">
-        <string>FlipH</string>
+        <string>FlipH [h]</string>
        </property>
       </widget>
      </item>
@@ -80,14 +80,14 @@
      <item row="2" column="1">
       <widget class="QCheckBox" name="colorInvert">
        <property name="text">
-        <string>Invert</string>
+        <string>Invert Colormap [i]</string>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="flipV">
        <property name="text">
-        <string>FlipV</string>
+        <string>FlipV [v]</string>
        </property>
       </widget>
      </item>

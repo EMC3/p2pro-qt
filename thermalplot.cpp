@@ -176,7 +176,6 @@ void ThermalPlot::plotImg()
     minMarker->updateText(img);
 
     updateUserMarkers();
-
     reRange();
 }
 

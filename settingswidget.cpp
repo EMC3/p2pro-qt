@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "logger/log.h"
 #include <QFile>
+#include <QKeyEvent>
 
 SettingsWidget::SettingsWidget(QWidget *parent)
     : QWidget(parent)
@@ -14,7 +15,7 @@ SettingsWidget::SettingsWidget(QWidget *parent)
 
     auto cmm = ColorMapManager::get();
     for(const auto & entry : cmm->cmaps){
-        ui->colormap->addItem(QString::fromStdString(entry.first));
+        ui->colormap->addItem(QString::fromStdString(entry.first) + " [" + QString::number(cmm->getIndex(entry.first)) + "]");
     }
 
     loadConfig();
@@ -47,8 +48,13 @@ void SettingsWidget::loadConfig(){
         return;
     }
 
+    auto cmm = ColorMapManager::get();
     QJsonObject root = doc.object();
-    ui->colormap->setCurrentText(root.value("cm_name").toString());
+
+    std::string cm = root.value("cm_name").toString().toStdString();
+    ui->colormap->setCurrentIndex(cmm->getIndex(cm)-1);
+    //ui->colormap->setCurrentText();
+
     ui->colorInvert->setChecked(root.value("cm_invert").toBool());
     ui->videoDev->setText(root.value("videodev").toString());
     ui->flipH->setChecked(root.value("im_fliph").toBool());
@@ -63,8 +69,41 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
-void SettingsWidget::applySettings(){
-    selectedColormap = ui->colormap->currentText().toStdString();
+void SettingsWidget::changeColormap(int cmIdx)
+{
+    if(cmIdx <= ui->colormap->count()){
+        ui->colormap->setCurrentIndex(cmIdx-1);
+    }
+    on_closeBtn_clicked();
+}
+
+void SettingsWidget::flipHKeyBtn()
+{
+    ui->flipH->setChecked(!ui->flipH->isChecked());
+    on_closeBtn_clicked();
+}
+
+void SettingsWidget::flipVKeyBtn()
+{
+    ui->flipV->setChecked(!ui->flipV->isChecked());
+    on_closeBtn_clicked();
+}
+
+void SettingsWidget::invertColorBtn(){
+    ui->colorInvert->setChecked(!ui->colorInvert->isChecked());
+    on_closeBtn_clicked();
+}
+
+void SettingsWidget::keyPressEvent(QKeyEvent *event){
+    if (event->key() == Qt::Key_Escape){
+        on_closeBtn_clicked();
+    }
+}
+
+void SettingsWidget::applySettings()
+{
+    QString cmStoreText = ui->colormap->currentText().section(" [",0,0);
+    selectedColormap = cmStoreText.toStdString();
     invertColormap = ui->colorInvert->isChecked();
     selectedVideoDevice = ui->videoDev->text();
     flipH = ui->flipH->isChecked();
@@ -74,8 +113,7 @@ void SettingsWidget::applySettings(){
     enableCenterMkr = ui->enableCenterTemp->isChecked();
 }
 
-void SettingsWidget::on_closeBtn_clicked()
-{
+void SettingsWidget::on_closeBtn_clicked(){
     applySettings();
 
     QJsonObject root;
@@ -91,8 +129,11 @@ void SettingsWidget::on_closeBtn_clicked()
     QString pth = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     std::filesystem::create_directories(pth.toStdString());
 
-    QFile configFile(pth+"/conf.json");
+    QString filepath = pth+"/conf.json";
+    QFile configFile(filepath);
     configFile.open(QFile::WriteOnly);
+
+    LOG << "Settings stored to: " << filepath;
 
     QJsonDocument doc(root);
     configFile.write(doc.toJson());
