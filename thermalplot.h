@@ -10,6 +10,7 @@ class ColorMap;
 struct Marker;
 
 #define AUTORANGE_RING_SIZE 32
+#define SELECT_RANGE 5
 
 class ThermalPlot : public QCustomPlot
 {
@@ -18,6 +19,7 @@ public:
     explicit ThermalPlot(QWidget *parent = nullptr);
     void setFlipSettings(bool flipH, bool flipV);
     void setImage(std::shared_ptr<ThermalImage> & image);
+    void setUserMarkerNameVisible(bool visibility);
 
     void reRange();
     void deleteUserMarkers();
@@ -29,6 +31,7 @@ public:
     void autoReplot();
 
     bool autoColorRange;
+    bool showUsrMkr;
     double minCRange, maxCRange;
     Marker * maxMarker;
     Marker * minMarker;

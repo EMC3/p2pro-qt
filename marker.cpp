@@ -17,6 +17,13 @@ Marker::Marker(QCPColorMap *colorMap, QColor markerColor, QColor textColor){
     tracer->setBrush(markerColor);
     tracer->setSize(12);
 
+    name = new QCPItemText(plot);
+    name->position->setParentAnchor(tracer->position);
+    name->setPositionAlignment(Qt::AlignTop | Qt::AlignLeft);
+    name->position->setCoords(0,-20);
+    name->setColor(Qt::white);
+    name->setBrush(QBrush(QColor(0,0,0,100)));
+    name->setText("MarkerName");
 
     label = new QCPItemText(plot);
     label->position->setParentAnchor(tracer->position);
@@ -28,8 +35,14 @@ Marker::Marker(QCPColorMap *colorMap, QColor markerColor, QColor textColor){
 
 Marker::~Marker()
 {
-    delete tracer;
-    delete label;
+    colorMap->parentPlot()->removeItem(name);
+    colorMap->parentPlot()->removeItem(label);
+    colorMap->parentPlot()->removeItem(tracer);
+
+    //delete tracer;
+    //delete label;
+    //delete name;
+
 }
 
 void Marker::setPosition(int dataX, int dataY){
@@ -45,9 +58,18 @@ void Marker::updateText(const std::shared_ptr<ThermalImage> &img){
     label->setText(QString::number(temp, 'f', 1));
 }
 
+void Marker::updateName(const QString &newText){
+    name->setText(newText);
+}
+
+void Marker::setNameVislble(bool value){
+    name->setVisible(value);
+}
+
 void Marker::setHidden(bool hide)
 {
     tracer->setVisible(!hide);
     label->setVisible(!hide);
+    name->setVisible(!hide);
     hidden = hide;
 }

@@ -19,7 +19,6 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     }
 
     loadConfig();
-
     applySettings();
 }
 
@@ -62,6 +61,7 @@ void SettingsWidget::loadConfig(){
     ui->enableMinTemp->setChecked(root.value("mkr_min").toBool(true));
     ui->enableMaxTemp->setChecked(root.value("mkr_max").toBool(true));
     ui->enableCenterTemp->setChecked(root.value("mkr_center").toBool(true));
+    ui->gbUserMarkerVisible->setChecked(root.value("mkr_usrshow").toBool(true));
 }
 
 SettingsWidget::~SettingsWidget()
@@ -111,6 +111,7 @@ void SettingsWidget::applySettings()
     enableMinMkr = ui->enableMinTemp->isChecked();
     enableMaxMkr = ui->enableMaxTemp->isChecked();
     enableCenterMkr = ui->enableCenterTemp->isChecked();
+    showUsrMkr = ui->gbUserMarkerVisible->isChecked();
 }
 
 void SettingsWidget::on_closeBtn_clicked(){
@@ -125,6 +126,7 @@ void SettingsWidget::on_closeBtn_clicked(){
     root.insert("mkr_min", enableMinMkr);
     root.insert("mkr_max", enableMaxMkr);
     root.insert("mkr_center", enableCenterMkr);
+    root.insert("mkr_usrshow",showUsrMkr);
 
     QString pth = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     std::filesystem::create_directories(pth.toStdString());

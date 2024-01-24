@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <colormap/colormap.h>
 #include "thermalcamera.h"
+#include "historymonitor.h"
 
 
 
@@ -37,6 +38,7 @@ private slots:
     void on_savePhoto_clicked();
     void on_settings_clicked();
     void on_playPause_clicked();
+    void on_tbHistory_clicked();
 
 private:
     Ui::DisplayWindow *ui;
@@ -50,7 +52,7 @@ private:
     void updateCmap(std::string name, bool inv);
 
     void tcStatusUpdate(QString statusStr);
-    void setMarkerSettings(bool showMax, bool showMin, bool showMid);
+    void setMarkerSettings(bool showMax, bool showMin, bool showMid, bool showUsrName);
 
     QString videoDev;
 
@@ -58,8 +60,10 @@ private:
     int saveIndex;
 
     SettingsWidget * sw;
+    historyMonitor * hm;
     void applySettings();
     void findSaveIndex();
+    void showCam();
 };
 
 #endif // DISPLAYWINDOW_H

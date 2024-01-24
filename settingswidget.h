@@ -25,6 +25,7 @@ public:
     bool enableMinMkr;
     bool enableMaxMkr;
     bool enableCenterMkr;
+    bool showUsrMkr;
     void invertColorBtn();
     void keyPressEvent(QKeyEvent *event);
 

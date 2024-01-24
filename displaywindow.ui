@@ -132,6 +132,22 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QToolButton" name="tbHistory">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="utilities-system-monitor"/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>

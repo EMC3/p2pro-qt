@@ -12,6 +12,7 @@ SOURCES += \
     colormap/hardcoded_colormaps.cpp \
     colormapmanager.cpp \
     displaywindow.cpp \
+    historymonitor.cpp \
     logger/log.cpp \
     logger/loggerbackend.cpp \
     main.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     colormap/hardcoded_colormaps.h \
     colormapmanager.h \
     displaywindow.h \
+    historymonitor.h \
     logger/log.h \
     logger/loggerbackend.h \
     #mainwindow.h \
@@ -42,6 +44,7 @@ HEADERS += \
 FORMS += \
     displaywindow.ui \
     #mainwindow.ui \
+    historymonitor.ui \
     settingswidget.ui
 
 

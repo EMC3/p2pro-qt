@@ -2,6 +2,9 @@
 #include "marker.h"
 #include "colormap/colormap.h"
 #include "thermalcamera.h"
+
+#include <QInputDialog>
+
 ThermalPlot::ThermalPlot(QWidget *parent)
     : QCustomPlot{parent}
 {
@@ -92,6 +95,14 @@ void ThermalPlot::setImage(std::shared_ptr<ThermalImage> &image){
     plotImg();
 }
 
+void ThermalPlot::setUserMarkerNameVisible(bool visibility){
+    showUsrMkr = visibility;
+    for(const auto& mkr : userMarkers){
+        mkr->setNameVislble(showUsrMkr);
+    }
+}
+
+
 void ThermalPlot::reRange()
 {
     if(!img)return;
@@ -171,9 +182,11 @@ void ThermalPlot::plotImg()
 
     maxMarker->setPosition(img->maxX, img->maxY);
     maxMarker->updateText(img);
+    maxMarker->updateName("Max");
 
     minMarker->setPosition(img->minX, img->minY);
     minMarker->updateText(img);
+    minMarker->updateName("Min");
 
     updateUserMarkers();
     reRange();
@@ -193,31 +206,54 @@ void ThermalPlot::plotClick(QMouseEvent *event)
     int rx, ry;
     colorMap->data()->coordToCell(key,val,&rx,&ry);
 
-    /*if(!img)return;
-    if(rx < 0 || rx >= img->width)return;
-    if(ry < 0 || ry >= img->height)return;*/
-
     bool flag = false;
 
-    userMarkers.remove_if([&](std::shared_ptr<Marker> & mkr){
-        int dx = mkr->dataX - rx;
-        int dy = mkr->dataY - ry;
-        if(std::sqrt(dx*dx + dy*dy) < 15){
-            flag = true;
-            return true;
-        }
-        return false;
-    });
+    /* Left button */
 
-    if(flag){
+    if(event->button() == Qt::LeftButton){ /* Remove / Adding Markers */
+        /* Remove Markers */
+        userMarkers.remove_if([&](std::shared_ptr<Marker> & mkr){
+            int dx = mkr->dataX - rx;
+            int dy = mkr->dataY - ry;
+            if(std::sqrt(dx*dx + dy*dy) < SELECT_RANGE){
+                flag = true;
+                return true;
+            }
+            return false;
+        });
+
+        if(flag){
+            replot(QCustomPlot::rpQueuedReplot);
+            return;
+        }
+
+        /* Add Markers */
+        auto mkr = std::make_shared<Marker>(colorMap, Qt::green, Qt::white);
+        QString mkrName = "Mkr " + QString::number(userMarkers.size());
+        mkr->updateName(mkrName);
+        mkr->setNameVislble(showUsrMkr);
+        userMarkers.push_back(mkr);
+        mkr->setPosition(rx, ry);
+        updateUserMarkers();
         replot(QCustomPlot::rpQueuedReplot);
         return;
     }
 
-    auto mkr = std::make_shared<Marker>(colorMap, Qt::green, Qt::white);
-    userMarkers.push_back(mkr);
-    mkr->setPosition(rx, ry);
-    updateUserMarkers();
+    if(event->button() == Qt::RightButton){ /* Change Marker Name */
+        for(const auto& mkr : userMarkers){
+            int dx = mkr->dataX - rx;
+            int dy = mkr->dataY - ry;
 
-    replot(QCustomPlot::rpQueuedReplot);
+            if(std::sqrt(dx*dx + dy*dy) < SELECT_RANGE){
+                bool ok;
+                QString newName = QInputDialog::getText(this, "Change Marker Name", "Please Enter a Markername:", QLineEdit::Normal, mkr->name->text(), &ok);
+
+                if (ok){
+                    mkr->updateName(newName);
+                    replot(QCustomPlot::rpQueuedReplot);
+                    return;
+                }
+            }
+        }
+    }
 }

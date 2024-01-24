@@ -16,30 +16,10 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="7" column="1">
-      <widget class="QCheckBox" name="enableCenterTemp">
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="flipV">
        <property name="text">
-        <string>Center</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="colormap"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="videoDev">
-       <property name="text">
-        <string>/dev/video0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Markers</string>
+        <string>FlipV [v]</string>
        </property>
       </widget>
      </item>
@@ -50,27 +30,27 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="flipH">
+     <item row="10" column="1">
+      <widget class="QCheckBox" name="gbUserMarkerVisible">
        <property name="text">
-        <string>FlipH [h]</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QCheckBox" name="enableMaxTemp">
-       <property name="text">
-        <string>Max Temp</string>
+        <string>Show User Marker Names</string>
        </property>
        <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="enableMinTemp">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Min Temp</string>
+        <string>Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="enableCenterTemp">
+       <property name="text">
+        <string>Center</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -84,10 +64,40 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="flipV">
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>FlipV [v]</string>
+        <string>Markers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="flipH">
+       <property name="text">
+        <string>FlipH [h]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="colormap"/>
+     </item>
+     <item row="7" column="1">
+      <widget class="QCheckBox" name="enableMinTemp">
+       <property name="text">
+        <string>Min Temp</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QCheckBox" name="enableMaxTemp">
+       <property name="text">
+        <string>Max Temp</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -98,17 +108,48 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="videoDev">
+       <property name="text">
+        <string>/dev/video0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
       <widget class="QPushButton" name="delMarkers">
        <property name="text">
         <string>Delete all user markers</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
+     <item row="5" column="1">
+      <widget class="QComboBox" name="cbRotation">
+       <item>
+        <property name="text">
+         <string>0 Degree</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>90 Degree</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>180 Degree</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>270 Degree</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Image</string>
+        <string>Rotation [r]</string>
        </property>
       </widget>
      </item>

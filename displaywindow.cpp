@@ -43,6 +43,7 @@ DisplayWindow::DisplayWindow(QWidget *parent)
     sw = new SettingsWidget(this);
     ui->stackedWidget->addWidget(sw);
 
+    /* S/S from Settings */
     connect(sw, &SettingsWidget::back, this, &DisplayWindow::applySettings);
     connect(sw, &SettingsWidget::delMarkers, ui->plot, &ThermalPlot::deleteUserMarkers);
 
@@ -51,6 +52,11 @@ DisplayWindow::DisplayWindow(QWidget *parent)
     connect(this, &DisplayWindow::flippedH, sw, &SettingsWidget::flipHKeyBtn);
     connect(this, &DisplayWindow::flippedV, sw, &SettingsWidget::flipVKeyBtn);
     connect(this, &DisplayWindow::colorInverted, sw, &SettingsWidget::invertColorBtn);
+
+    /* History Monitor */
+    hm = new historyMonitor(this);
+    ui->stackedWidget->addWidget(hm);
+    connect(hm, &historyMonitor::back, this, &DisplayWindow::showCam);
 
     applySettings();
 }
@@ -75,13 +81,25 @@ void DisplayWindow::findSaveIndex(){
     }
 }
 
+void DisplayWindow::showCam()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 void DisplayWindow::applySettings(){
     ui->stackedWidget->setCurrentIndex(0);
 
+    /* Inversion CM*/
     updateCmap(sw->selectedColormap, sw->invertColormap);
+
+    /* Video Device Change */
     videoDev = sw->selectedVideoDevice;
+
+    /* Flip Image */
     ui->plot->setFlipSettings(sw->flipH, sw->flipV);
-    setMarkerSettings(sw->enableMinMkr, sw->enableMaxMkr, sw->enableCenterMkr);
+
+    /* set Marker Settings */
+    setMarkerSettings(sw->enableMinMkr, sw->enableMaxMkr, sw->enableCenterMkr, sw->showUsrMkr);
 }
 
 DisplayWindow::~DisplayWindow()
@@ -187,10 +205,11 @@ void DisplayWindow::displayImage()
 }
 
 
-void DisplayWindow::setMarkerSettings(bool showMax, bool showMin, bool showMid)
+void DisplayWindow::setMarkerSettings(bool showMax, bool showMin, bool showMid, bool showUsrName)
 {
     ui->plot->maxMarker->setHidden(!showMax);
     ui->plot->minMarker->setHidden(!showMin);
+    ui->plot->setUserMarkerNameVisible(showUsrName);
     ui->plot->autoReplot();
 }
 
@@ -213,4 +232,9 @@ void DisplayWindow::tcStatusUpdate(QString statusStr)
         tc->stop();
         QMessageBox::critical(this, "Error","Failed to access camera: "+statusStr);
     }
+}
+
+void DisplayWindow::on_tbHistory_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
 }

@@ -60,6 +60,22 @@ void Video4LinuxWrapperGeneric::worker()
         close(fd);
         return;
     }
+
+    //V4L2_CID_ROTATE
+    /*
+    struct v4l2_control v4l2_ctl;
+    memset(&v4l2_ctl, 0, sizeof(v4l2_control));
+    v4l2_ctl.id = V4L2_CID_ROTATE;
+    v4l2_ctl.value = 1;
+
+    if (ioctl(fd, VIDIOC_S_CTRL, &v4l2_ctl) == -1) {
+        ERR << "Error setting rotation of the camera";
+        errorString = QString("Error setting camera controls: ")+strerror(errno);
+        hasError = true;
+        close(fd);
+        return;
+    }*/
+
     struct v4l2_format fmt;
     memset(&fmt, 0, sizeof(v4l2_format));
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -67,6 +83,7 @@ void Video4LinuxWrapperGeneric::worker()
     fmt.fmt.pix.height = height;
     fmt.fmt.pix.pixelformat = format;
     fmt.fmt.pix.field = V4L2_FIELD_ANY;
+
 
     if (ioctl(fd, VIDIOC_S_FMT, &fmt) == -1) {
         ERR << "Error setting format";
