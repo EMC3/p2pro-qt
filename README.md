@@ -9,5 +9,8 @@ on Linux and Android (rooted)
 ## Open Issues
 * Camera Device Auto Detection / Scan	(automatically scans for the correct /dev/video*)
 * Making Usr Marker Persistent in Config
-* Camera Angle Rotation function
 * Marker Temperature Histogram
+* Change User Marker Behaviour on Rotation.
+
+## Done
+* Camera Angle Rotation function

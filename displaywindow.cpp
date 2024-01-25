@@ -101,6 +101,9 @@ void DisplayWindow::applySettings(){
     /* Flip Image */
     ui->plot->setFlipSettings(sw->flipH, sw->flipV);
 
+    /* Rotate Image */
+    tc->rotateCam(sw->rotation);
+
     /* set Marker Settings */
     setMarkerSettings(sw->enableMinMkr, sw->enableMaxMkr, sw->enableCenterMkr, sw->showUsrMkr);
 }
@@ -235,7 +238,7 @@ void DisplayWindow::on_playPause_clicked()
         tc->stop();
         ui->playPause->setIcon(QIcon(":/darkicons/play.svg"));
     }else{
-        tc->start(videoDev);
+        tc->start(videoDev,ThermalCamera::ROTATION(sw->rotation));
         ui->playPause->setIcon(QIcon(":/darkicons/stop.svg"));
     }
 
