@@ -35,6 +35,7 @@ public:
     double minCRange, maxCRange;
     Marker * maxMarker;
     Marker * minMarker;
+    Marker * centerMarker;
     std::list<std::shared_ptr<Marker>> userMarkers;
 private:
 

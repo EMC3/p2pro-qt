@@ -26,6 +26,7 @@ public:
     bool enableMaxMkr;
     bool enableCenterMkr;
     bool showUsrMkr;
+    int rotation;   /* 0 = 0 Degree; 1 = 90 Degree; 2 = 180 Degree; 3 = 270 Degree; */
     void invertColorBtn();
     void keyPressEvent(QKeyEvent *event);
 
@@ -33,6 +34,8 @@ public slots:
     void changeColormap(int cmIdx);
     void flipHKeyBtn();
     void flipVKeyBtn();
+    void toggleCrosshairBtn();
+    void rotateKeyBtn();
 
 
 private slots:

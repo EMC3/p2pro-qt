@@ -62,6 +62,15 @@ void SettingsWidget::loadConfig(){
     ui->enableMaxTemp->setChecked(root.value("mkr_max").toBool(true));
     ui->enableCenterTemp->setChecked(root.value("mkr_center").toBool(true));
     ui->gbUserMarkerVisible->setChecked(root.value("mkr_usrshow").toBool(true));
+
+    int curRotIndex = root.value("cm_rotate").toInt(0);
+    if((curRotIndex >= 0) && (curRotIndex < 4)){
+        ui->cbRotation->setCurrentIndex(curRotIndex);
+    }
+    else{
+        ui->cbRotation->setCurrentIndex(0);
+    }
+
 }
 
 SettingsWidget::~SettingsWidget()
@@ -89,6 +98,20 @@ void SettingsWidget::flipVKeyBtn()
     on_closeBtn_clicked();
 }
 
+void SettingsWidget::toggleCrosshairBtn()
+{
+    ui->enableCenterTemp->setChecked(!ui->enableCenterTemp->isChecked());
+    on_closeBtn_clicked();
+}
+
+void SettingsWidget::rotateKeyBtn()
+{
+    int idx = ui->cbRotation->currentIndex();
+    (idx < 3) ? idx++ : idx = 0;
+    ui->cbRotation->setCurrentIndex(idx);
+    on_closeBtn_clicked();
+}
+
 void SettingsWidget::invertColorBtn(){
     ui->colorInvert->setChecked(!ui->colorInvert->isChecked());
     on_closeBtn_clicked();
@@ -112,6 +135,7 @@ void SettingsWidget::applySettings()
     enableMaxMkr = ui->enableMaxTemp->isChecked();
     enableCenterMkr = ui->enableCenterTemp->isChecked();
     showUsrMkr = ui->gbUserMarkerVisible->isChecked();
+    rotation = ui->cbRotation->currentIndex();
 }
 
 void SettingsWidget::on_closeBtn_clicked(){
@@ -120,6 +144,7 @@ void SettingsWidget::on_closeBtn_clicked(){
     QJsonObject root;
     root.insert("cm_name", QString::fromStdString(selectedColormap));
     root.insert("cm_invert", invertColormap);
+    root.insert("cm_rotate", rotation);
     root.insert("videodev", selectedVideoDevice);
     root.insert("im_fliph", flipH);
     root.insert("im_flipv", flipV);

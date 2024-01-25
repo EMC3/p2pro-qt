@@ -52,6 +52,8 @@ DisplayWindow::DisplayWindow(QWidget *parent)
     connect(this, &DisplayWindow::flippedH, sw, &SettingsWidget::flipHKeyBtn);
     connect(this, &DisplayWindow::flippedV, sw, &SettingsWidget::flipVKeyBtn);
     connect(this, &DisplayWindow::colorInverted, sw, &SettingsWidget::invertColorBtn);
+    connect(this, &DisplayWindow::toggleCrosshair, sw, &SettingsWidget::toggleCrosshairBtn);
+    connect(this, &DisplayWindow::rotate, sw, &SettingsWidget::rotateKeyBtn);
 
     /* History Monitor */
     hm = new historyMonitor(this);
@@ -87,6 +89,7 @@ void DisplayWindow::showCam()
 }
 
 void DisplayWindow::applySettings(){
+    /* Move Display Window to the front */
     ui->stackedWidget->setCurrentIndex(0);
 
     /* Inversion CM*/
@@ -134,6 +137,18 @@ void DisplayWindow::keyPressEvent(QKeyEvent *ev)
     if (ev->text().compare(QString("i")) == 0){
         LOG << "Color inverted";
         emit colorInverted();
+        return;
+    }
+
+    if (ev->key() == Qt::Key_C){
+        LOG << "Crosshair toggled.";
+        emit toggleCrosshair();
+        return;
+    }
+
+    if (ev->key() == Qt::Key_R){
+        LOG << "Rotated";
+        emit rotate();
         return;
     }
 }
@@ -209,6 +224,7 @@ void DisplayWindow::setMarkerSettings(bool showMax, bool showMin, bool showMid, 
 {
     ui->plot->maxMarker->setHidden(!showMax);
     ui->plot->minMarker->setHidden(!showMin);
+    ui->plot->centerMarker->setHidden(!showMid);
     ui->plot->setUserMarkerNameVisible(showUsrName);
     ui->plot->autoReplot();
 }

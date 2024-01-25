@@ -32,6 +32,8 @@ signals:
     void flippedH();
     void flippedV();
     void colorInverted();
+    void rotate();
+    void toggleCrosshair();
 
 private slots:
     void on_cmapLock_clicked();
@@ -46,11 +48,8 @@ private:
     std::shared_ptr<ThermalImage> img;
     ThermalCamera * tc;
 
-
     void displayImage();
-
     void updateCmap(std::string name, bool inv);
-
     void tcStatusUpdate(QString statusStr);
     void setMarkerSettings(bool showMax, bool showMin, bool showMid, bool showUsrName);
 

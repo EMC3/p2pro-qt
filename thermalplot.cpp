@@ -82,6 +82,7 @@ ThermalPlot::ThermalPlot(QWidget *parent)
 
     maxMarker = new Marker(colorMap, Qt::red, Qt::red);
     minMarker = new Marker(colorMap, Qt::cyan, Qt::cyan);
+    centerMarker = new Marker(colorMap, Qt::gray, Qt::cyan);
 }
 
 void ThermalPlot::setFlipSettings(bool flipH, bool flipV){
@@ -187,6 +188,10 @@ void ThermalPlot::plotImg()
     minMarker->setPosition(img->minX, img->minY);
     minMarker->updateText(img);
     minMarker->updateName("Min");
+
+    centerMarker->setPosition(img->width/2, img->height/2);
+    centerMarker->updateText(img);
+    centerMarker->updateName("");
 
     updateUserMarkers();
     reRange();
