@@ -154,6 +154,17 @@ void DisplayWindow::keyPressEvent(QKeyEvent *ev)
         emit rotate();
         return;
     }
+
+    if (ev->key() == Qt::Key_L){
+        LOG << "Locked";
+        on_cmapLock_clicked();
+        return;
+    }
+
+    if (ev->key() == Qt::Key_P){
+        on_playPause_clicked();
+        return;
+    }
 }
 
 void DisplayWindow::on_cmapLock_clicked()

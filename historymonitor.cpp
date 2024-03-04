@@ -14,7 +14,6 @@ historyMonitor::historyMonitor(QWidget *parent) :
     /* QCustom Plot TryOut */
     setupGraphs();
 
-
     /* Connect Timer to Update Graph */
     ticktack = new QTimer(this);
     connect(ticktack,&QTimer::timeout,this,&historyMonitor::updateGraphs);
@@ -81,19 +80,24 @@ void historyMonitor::setupGraphs()
     }
     // configure bottom axis to show date instead of number:
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
+
     //dateTicker->setDateTimeFormat("hh:mm:ss dd-MM\nyyyy");
     historyPlot->xAxis->setTicker(dateTicker);
+
     // configure left axis text labels:
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     textTicker->addTick(10, "a bit\nlow");
     textTicker->addTick(50, "quite\nhigh");
     historyPlot->yAxis->setTicker(textTicker);
+
     // set a more compact font size for bottom and left axis tick labels:
     historyPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
     historyPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
+
     // set axis labels:
     historyPlot->xAxis->setLabel("Time");
     historyPlot->yAxis->setLabel("Temperature [°C]");
+
     // make top and right axes visible but without ticks and labels:
     historyPlot->xAxis2->setVisible(true);
     historyPlot->yAxis2->setVisible(true);
@@ -101,8 +105,8 @@ void historyMonitor::setupGraphs()
     historyPlot->yAxis2->setTicks(false);
     historyPlot->xAxis2->setTickLabels(false);
     historyPlot->yAxis2->setTickLabels(false);
-    // set axis ranges to show all data:
 
+    // set axis ranges to show all data:
     historyPlot->xAxis->setRange(now, now+24*3600*249);
     historyPlot->yAxis->setRange(0, 60);
 

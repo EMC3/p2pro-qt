@@ -70,7 +70,7 @@
         <item>
          <widget class="QCheckBox" name="cbMarker1">
           <property name="text">
-           <string>Maker 1</string>
+           <string>Center</string>
           </property>
          </widget>
         </item>
